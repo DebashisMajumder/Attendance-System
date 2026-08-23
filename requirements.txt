@@ -1,0 +1,13 @@
+opencv-python
+numpy
+retina-face
+tensorflow
+insightface
+onnxruntime-gpu
+scikit-learn
+joblib
+requests
+jupyter
+ipykernel
+
+-e .
