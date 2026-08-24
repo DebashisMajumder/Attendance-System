@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar"><h1>Mark Attendance</h1></div>
+
+<div class="card">
+  <form method="GET">
+    <div class="form-row">
+      <div>
+        <label>Subject</label>
+        <select name="subject_id" required>
+          <option value="">-- Select Subject --</option>
+          {% for s in subjects %}
+          <option value="{{ s.id }}" {{ 'selected' if selected_subject == s.id }}>{{ s.code }} - {{ s.name }} ({{ s.department.name }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Year (optional)</label>
+        <select name="year">
+          <option value="">All Years</option>
+          {% for y in year_choices %}
+          <option value="{{ y }}" {{ 'selected' if selected_year == y }}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+      </div>
+      <div><button class="btn" type="submit">Load</button></div>
+    </div>
+  </form>
+</div>
+
+{% if selected_subject and students %}
+<div class="card">
+  <form method="POST">
+    <input type="hidden" name="subject_id" value="{{ selected_subject }}">
+    <input type="hidden" name="date" value="{{ selected_date }}">
+    <input type="hidden" name="year" value="{{ selected_year }}">
+    <table>
+      <tr><th>Roll No.</th><th>Name</th><th>Year</th><th>Status</th></tr>
+      {% for s in students %}
+      <tr>
+        <td>{{ s.roll_no }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.year }}</td>
+        <td>
+          <div class="status-radio-group">
+            <label><input type="radio" name="status_{{ s.id }}" value="Present" {{ 'checked' if existing_records.get(s.id, 'Present') == 'Present' }}> Present</label>
+            <label><input type="radio" name="status_{{ s.id }}" value="Absent" {{ 'checked' if existing_records.get(s.id) == 'Absent' }}> Absent</label>
+            <label><input type="radio" name="status_{{ s.id }}" value="Late" {{ 'checked' if existing_records.get(s.id) == 'Late' }}> Late</label>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div style="margin-top:16px;">
+      <button class="btn" type="submit">💾 Save Attendance</button>
+    </div>
+  </form>
+</div>
+{% elif selected_subject %}
+<div class="card"><div class="empty-state">No students found for this subject's department{{ ' / ' + selected_year if selected_year }}.</div></div>
+{% endif %}
+{% endblock %}

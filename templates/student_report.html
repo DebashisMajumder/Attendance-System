@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <h1>{{ student.name }}'s Attendance</h1>
+  <a class="btn btn-secondary" href="{{ url_for('export_student_report_csv', id=student.id) }}">📄 Export CSV</a>
+</div>
+
+<div class="card">
+  <p><b>Roll No.:</b> {{ student.roll_no }} &nbsp;&nbsp; <b>Department:</b> {{ student.department.name }} &nbsp;&nbsp; <b>Year:</b> {{ student.year }}</p>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">{{ total }}</div><div class="label">Total Days</div></div>
+  <div class="stat-card"><div class="num" style="color:#1a9e6b;">{{ present }}</div><div class="label">Present</div></div>
+  <div class="stat-card"><div class="num" style="color:#d9534f;">{{ absent }}</div><div class="label">Absent</div></div>
+  <div class="stat-card"><div class="num" style="color:#e0a800;">{{ late }}</div><div class="label">Late</div></div>
+  <div class="stat-card"><div class="num" style="color:{{ '#1a9e6b' if percentage >= 75 else '#d9534f' }};">{{ percentage }}%</div><div class="label">Attendance</div></div>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <tr><th>Date</th><th>Subject</th><th>Status</th></tr>
+    {% for r in records %}
+    <tr>
+      <td>{{ r.date.strftime('%d %b %Y') }}</td>
+      <td>{{ r.subject.code }} - {{ r.subject.name }}</td>
+      <td><span class="pill pill-{{ r.status|lower }}">{{ r.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty-state">No attendance records yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

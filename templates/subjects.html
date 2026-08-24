@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar"><h1>Subjects</h1></div>
+
+{% if current_user_role == 'admin' %}
+<div class="card">
+  <h3 style="margin-top:0;">Add Subject</h3>
+  {% if departments %}
+  <form method="POST" action="{{ url_for('add_subject') }}">
+    <div class="form-row">
+      <div><label>Subject Name</label><input type="text" name="name" placeholder="e.g. Data Structures" required></div>
+      <div><label>Subject Code</label><input type="text" name="code" placeholder="e.g. CS201" required></div>
+      <div>
+        <label>Department</label>
+        <select name="department_id" required>
+          {% for d in departments %}<option value="{{ d.id }}">{{ d.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div><label>Semester</label><input type="text" name="semester" placeholder="e.g. 3rd"></div>
+      <div><button class="btn" type="submit">+ Add Subject</button></div>
+    </div>
+  </form>
+  {% else %}
+  <p style="color:#6b7280;">Add a department first before creating subjects.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+  {% if subjects %}
+  <table>
+    <tr><th>Code</th><th>Name</th><th>Department</th><th>Semester</th>{% if current_user_role == 'admin' %}<th></th>{% endif %}</tr>
+    {% for s in subjects %}
+    <tr>
+      <td>{{ s.code }}</td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.department.name }}</td>
+      <td>{{ s.semester or '-' }}</td>
+      {% if current_user_role == 'admin' %}
+      <td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_subject', id=s.id) }}" onclick="return confirm('Delete this subject?')">Delete</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty-state">No subjects yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

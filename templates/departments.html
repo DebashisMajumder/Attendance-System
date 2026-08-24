@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar"><h1>Departments</h1></div>
+
+{% if current_user_role == 'admin' %}
+<div class="card">
+  <h3 style="margin-top:0;">Add Department</h3>
+  <form method="POST" action="{{ url_for('add_department') }}">
+    <div class="form-row">
+      <div><label>Department Name</label><input type="text" name="name" placeholder="e.g. Computer Engineering" required></div>
+      <div><button class="btn" type="submit">+ Add Department</button></div>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+<div class="card">
+  {% if departments %}
+  <table>
+    <tr><th>Name</th><th>Subjects</th><th>Students</th>{% if current_user_role == 'admin' %}<th></th>{% endif %}</tr>
+    {% for d in departments %}
+    <tr>
+      <td>{{ d.name }}</td>
+      <td>{{ d.subjects|length }}</td>
+      <td>{{ d.students|length }}</td>
+      {% if current_user_role == 'admin' %}
+      <td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_department', id=d.id) }}" onclick="return confirm('Delete this department?')">Delete</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty-state">No departments yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar"><h1>Attendance Reports</h1></div>
+
+<div class="card">
+  <form method="GET">
+    <div class="form-row">
+      <div>
+        <label>Subject</label>
+        <select name="subject_id" required>
+          <option value="">-- Select Subject --</option>
+          {% for s in subjects %}
+          <option value="{{ s.id }}" {{ 'selected' if selected_subject == s.id }}>{{ s.code }} - {{ s.name }} ({{ s.department.name }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Year (optional)</label>
+        <select name="year">
+          <option value="">All Years</option>
+          {% for y in year_choices %}
+          <option value="{{ y }}" {{ 'selected' if selected_year == y }}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div><label>Start Date</label><input type="date" name="start_date" value="{{ start_date or '' }}"></div>
+      <div><label>End Date</label><input type="date" name="end_date" value="{{ end_date or '' }}"></div>
+      <div><button class="btn" type="submit">Generate Report</button></div>
+    </div>
+  </form>
+</div>
+
+{% if report_data %}
+<div class="card">
+  <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:12px;">
+    <a class="btn btn-secondary"
+       href="{{ url_for('export_report', subject_id=selected_subject, year=selected_year, start_date=start_date, end_date=end_date) }}">📥 Export Excel</a>
+    <a class="btn btn-secondary"
+       href="{{ url_for('export_report_csv', subject_id=selected_subject, year=selected_year, start_date=start_date, end_date=end_date) }}">📄 Export CSV</a>
+  </div>
+  <table>
+    <tr><th>Roll No.</th><th>Name</th><th>Year</th><th>Total Days</th><th>Present</th><th>Absent</th><th>Late</th><th>Attendance %</th><th></th></tr>
+    {% for r in report_data %}
+    <tr>
+      <td>{{ r.student.roll_no }}</td>
+      <td>{{ r.student.name }}</td>
+      <td>{{ r.student.year }}</td>
+      <td>{{ r.total }}</td>
+      <td><span class="pill pill-present">{{ r.present }}</span></td>
+      <td><span class="pill pill-absent">{{ r.absent }}</span></td>
+      <td><span class="pill pill-late">{{ r.late }}</span></td>
+      <td><b style="color:{{ '#1a9e6b' if r.percentage >= 75 else '#d9534f' }}">{{ r.percentage }}%</b></td>
+      <td><a class="link" href="{{ url_for('student_report', id=r.student.id) }}">Details →</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% elif selected_subject %}
+<div class="card"><div class="empty-state">No attendance records found for this subject/date range.</div></div>
+{% endif %}
+{% endblock %}

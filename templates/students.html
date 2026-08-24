@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <h1>Students</h1>
+  <div style="display:flex; gap:10px;">
+    <a class="btn btn-secondary" href="{{ url_for('export_students', department_id=selected_department, year=selected_year) }}">📥 Export Excel</a>
+    <a class="btn btn-secondary" href="{{ url_for('export_students_csv', department_id=selected_department, year=selected_year) }}">📄 Export CSV</a>
+  </div>
+</div>
+
+{% if current_user_role == 'admin' %}
+<div class="card">
+  <h3 style="margin-top:0;">Add Student</h3>
+  {% if departments %}
+  <form method="POST" action="{{ url_for('add_student') }}">
+    <div class="form-row">
+      <div><label>Roll No.</label><input type="text" name="roll_no" required></div>
+      <div><label>Full Name</label><input type="text" name="name" required></div>
+      <div><label>Email</label><input type="email" name="email"></div>
+      <div><label>Phone</label><input type="text" name="phone"></div>
+      <div>
+        <label>Department</label>
+        <select name="department_id" required>
+          {% for d in departments %}<option value="{{ d.id }}">{{ d.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Year</label>
+        <select name="year" required>
+          {% for y in year_choices %}<option value="{{ y }}">{{ y }}</option>{% endfor %}
+        </select>
+      </div>
+      <div><button class="btn" type="submit">+ Add Student</button></div>
+    </div>
+  </form>
+  {% else %}
+  <p style="color:#6b7280;">Add a department first before adding students.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+  <form method="GET" style="margin-bottom:16px;">
+    <div class="form-row" style="max-width:520px;">
+      <div>
+        <label>Filter by Department</label>
+        <select name="department_id" onchange="this.form.submit()">
+          <option value="">All Departments</option>
+          {% for d in departments %}
+          <option value="{{ d.id }}" {{ 'selected' if selected_department == d.id }}>{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Filter by Year</label>
+        <select name="year" onchange="this.form.submit()">
+          <option value="">All Years</option>
+          {% for y in year_choices %}
+          <option value="{{ y }}" {{ 'selected' if selected_year == y }}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </form>
+
+  {% if students %}
+  <table>
+    <tr><th>Roll No.</th><th>Name</th><th>Department</th><th>Year</th><th>Email</th><th>Phone</th><th></th></tr>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.roll_no }}</td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.department.name }}</td>
+      <td>{{ s.year }}</td>
+      <td>{{ s.email or '-' }}</td>
+      <td>{{ s.phone or '-' }}</td>
+      <td style="white-space:nowrap;">
+        <a class="link" href="{{ url_for('student_report', id=s.id) }}">Report</a>
+        {% if current_user_role == 'admin' %}
+        &nbsp;|&nbsp;<a class="link" href="{{ url_for('edit_student', id=s.id) }}">Edit</a>
+        &nbsp;|&nbsp;<a class="link" style="color:#d9534f;" href="{{ url_for('delete_student', id=s.id) }}" onclick="return confirm('Delete this student?')">Delete</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty-state">No students found.</div>
+  {% endif %}
+</div>
+{% endblock %}

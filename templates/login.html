@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - TechAttend</title>
+<style>
+  body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg,#12233d,#1c3a63); min-height: 100vh; display:flex; align-items:center; justify-content:center; margin:0; }
+  .box { background:#fff; padding:40px; border-radius:12px; width:100%; max-width:380px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+  .box h1 { text-align:center; color:#12233d; font-size:1.4rem; margin-bottom:5px; }
+  .box p.sub { text-align:center; color:#6b7280; font-size:0.85rem; margin-bottom:25px; }
+  label { font-size:0.85rem; font-weight:600; color:#6b7280; display:block; margin-bottom:5px; }
+  input { width:100%; padding:10px 12px; border:1px solid #dde3ec; border-radius:6px; margin-bottom:16px; font-size:0.95rem; box-sizing:border-box; }
+  button { width:100%; padding:11px; background:#2f80ed; color:#fff; border:none; border-radius:6px; font-size:0.95rem; font-weight:600; cursor:pointer; }
+  button:hover { background:#256fd1; }
+  .flash { padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:0.85rem; }
+  .flash-danger { background:#fdecea; color:#d9534f; }
+  .flash-success { background:#e6f7ef; color:#1a9e6b; }
+  .flash-info { background:#eaf2fe; color:#2f80ed; }
+  .hint { text-align:center; margin-top:16px; font-size:0.8rem; color:#9aa5b1; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🎓 TechAttend</h1>
+  <p class="sub">Technical College Attendance System</p>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  <form method="POST">
+    <label>Username</label>
+    <input type="text" name="username" required autofocus>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button type="submit">Sign In</button>
+  </form>
+  <p class="hint">Default admin: <b>admin</b> / <b>admin123</b></p>
+</div>
+</body>
+</html>

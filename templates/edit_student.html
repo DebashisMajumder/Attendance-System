@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar"><h1>Edit Student</h1></div>
+<div class="card" style="max-width:480px;">
+  <form method="POST">
+    <label>Roll No.</label>
+    <input type="text" name="roll_no" value="{{ student.roll_no }}" required style="margin-bottom:14px;">
+    <label>Full Name</label>
+    <input type="text" name="name" value="{{ student.name }}" required style="margin-bottom:14px;">
+    <label>Email</label>
+    <input type="email" name="email" value="{{ student.email or '' }}" style="margin-bottom:14px;">
+    <label>Phone</label>
+    <input type="text" name="phone" value="{{ student.phone or '' }}" style="margin-bottom:14px;">
+    <label>Department</label>
+    <select name="department_id" style="margin-bottom:14px;">
+      {% for d in departments %}
+      <option value="{{ d.id }}" {{ 'selected' if d.id == student.department_id }}>{{ d.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Year</label>
+    <select name="year" style="margin-bottom:18px;">
+      {% for y in year_choices %}
+      <option value="{{ y }}" {{ 'selected' if y == student.year }}>{{ y }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">Save Changes</button>
+    <a class="btn btn-secondary" href="{{ url_for('students') }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

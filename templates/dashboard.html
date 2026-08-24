@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <h1>Dashboard</h1>
+  <span style="color:#6b7280; font-size:0.9rem;">{{ today.strftime('%A, %d %B %Y') }}</span>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">{{ total_students }}</div><div class="label">Total Students</div></div>
+  <div class="stat-card"><div class="num">{{ total_subjects }}</div><div class="label">Subjects</div></div>
+  <div class="stat-card"><div class="num">{{ total_departments }}</div><div class="label">Departments</div></div>
+  <div class="stat-card"><div class="num" style="color:#1a9e6b;">{{ today_present }}</div><div class="label">Present Today</div></div>
+  <div class="stat-card"><div class="num" style="color:#d9534f;">{{ today_absent }}</div><div class="label">Absent Today</div></div>
+  <div class="stat-card"><div class="num" style="color:#e0a800;">{{ today_late }}</div><div class="label">Late Today</div></div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Quick Actions</h3>
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <a href="{{ url_for('attendance') }}" class="btn">✅ Mark Today's Attendance</a>
+    <a href="{{ url_for('students') }}" class="btn btn-secondary">👨‍🎓 Manage Students</a>
+    <a href="{{ url_for('reports') }}" class="btn btn-secondary">📈 View Reports</a>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Subjects Overview</h3>
+  {% if subjects %}
+  <table>
+    <tr><th>Code</th><th>Subject</th><th>Department</th><th></th></tr>
+    {% for s in subjects %}
+    <tr>
+      <td>{{ s.code }}</td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.department.name }}</td>
+      <td><a class="link" href="{{ url_for('attendance', subject_id=s.id) }}">Mark attendance →</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty-state">No subjects yet. <a class="link" href="{{ url_for('subjects') }}">Add one</a>.</div>
+  {% endif %}
+</div>
+{% endblock %}
