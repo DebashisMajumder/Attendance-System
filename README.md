@@ -237,18 +237,7 @@ The camera captures the student's face after successful fingerprint identificati
 
 The camera does not run the face-recognition pipeline itself. Its responsibility is limited to **Capture → Upload**, keeping the embedded device lightweight while the more computationally intensive machine-learning processing remains on the server.
 
-### Raspberry Pi / Embedded Controller
 
-A Raspberry Pi Zero 2 W can act as the hardware-side controller, responsible for:
-
-- Managing communication between hardware components
-- Receiving fingerprint events
-- Controlling the camera trigger
-- Initiating the five-frame capture process
-- Communicating with the server
-- Sending the fingerprint enrollment ID and captured images
-
-This separates embedded hardware operations from machine-learning inference.
 
 ---
 
