@@ -9,5 +9,10 @@ joblib
 requests
 jupyter
 ipykernel
+flask
+flask_sqlalchemy
+Werkzeug
+openpyxl
+pathlib
 
 -e .
