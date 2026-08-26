@@ -153,8 +153,8 @@ This creates a two-factor biometric verification mechanism.
                 |                                    |
                 v                                    v
        +------------------+                +------------------+
-       | Fingerprint      |                | Camera / ESP32   |
-       | Sensor           |                | Camera Module    |
+       | Fingerprint      |                | ESP32-CAM        |
+       | Sensor           |                | (Camera + Wi-Fi) |
        +--------+---------+                +---------+--------+
                 |                                     |
           Enrollment ID                          Five Frames
@@ -237,7 +237,22 @@ The camera captures the student's face after successful fingerprint identificati
 
 The camera does not run the face-recognition pipeline itself. Its responsibility is limited to **Capture → Upload**, keeping the embedded device lightweight while the more computationally intensive machine-learning processing remains on the server.
 
+### ESP32-CAM Controller
 
+The ESP32-CAM module serves as both the camera and the hardware-side controller, responsible for:
+
+- Managing communication between the fingerprint sensor and the server
+- Receiving fingerprint match events
+- Controlling the camera trigger
+- Capturing the five-frame burst
+- Connecting to the server over Wi-Fi and uploading frames
+- Sending the fingerprint enrollment ID
+
+Using a single ESP32-CAM module for both image capture and device-side control keeps the hardware footprint small and avoids the need for a separate embedded controller board.
+
+### Power Supply
+
+The device is powered by a **lithium-ion (Li-ion) battery**, allowing the fingerprint-and-camera unit to operate as a standalone, portable station independent of a fixed power outlet. This is particularly relevant for classroom deployment, where the unit may need to be mounted or moved without immediate access to mains power.
 
 ---
 
@@ -276,7 +291,7 @@ The camera does not run the face-recognition pipeline itself. Its responsibility
 | **Machine Learning** | InsightFace, Buffalo_L, ONNX Runtime, KNN classifier, NumPy, OpenCV |
 | **Preprocessing** | RetinaFace (face detection and cropping) |
 | **Frontend** | HTML, CSS, JavaScript, Jinja2 templates |
-| **Hardware** | ESP32 camera subsystem, fingerprint sensor, Raspberry Pi Zero 2 W, camera module, optional TFT/status display |
+| **Hardware** | ESP32-CAM (camera + Wi-Fi controller), fingerprint sensor, Li-ion battery (portable power supply), optional TFT/status display |
 | **Reporting** | OpenPyXL, CSV generation |
 
 ---
